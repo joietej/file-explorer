@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { File, Folder, isChecked, isVisited } from "../hooks/useFolders";
+import { File, Folder, isChecked, isVisited, isValidFile } from "../hooks/useFolders";
 import FolderInfo from "./FolderInfo.vue";
 import FileInfo from "./FileInfo.vue";
 
@@ -32,7 +32,7 @@ const isFolderVisited = (id: string) => isVisited(id, props.visitedFolderIds);
       />
       <FileInfo
         :key="file.id"
-        v-for="file in currentFolder?.files"
+        v-for="file in currentFolder?.files?.filter(f => isValidFile(f))"
         :file="file"
         :is-checked="isFileChecked(file.id)"
         @change="$emit('fileSelect', $event, file)"

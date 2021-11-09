@@ -43,6 +43,17 @@ export const searchFolder = (
   return null;
 };
 
+export const isValidFile = (file: File): boolean => {
+  var parts = file?.name?.split(".");
+  if (parts?.length > 1) {
+    const extn = parts[1].toLowerCase();
+    return (
+      extn === "jpeg" || extn === "jpg" || extn === "png" || extn === "pdf"
+    );
+  }
+  return false;
+};
+
 const useFolders = () => {
   const url = "https://api-dev.reo.so/api/folderStructure ";
   const { data, error } = useSWRV(url);

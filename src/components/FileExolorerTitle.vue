@@ -20,7 +20,7 @@ defineEmits<{
         <ChevronLeftIcon class="h-6 w-6" />
       </button>
       <span class="text-sm font-semibold text-gray-600">
-        {{ defaultTitle }}
+        {{ currentFolder?.name || defaultTitle }}
       </span>
     </div>
     <button @click="$emit('reset')">

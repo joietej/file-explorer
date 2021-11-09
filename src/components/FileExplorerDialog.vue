@@ -10,7 +10,7 @@ import {
 import FileExplorerContent from "./FileExplorerContent.vue";
 import FileExplorerTitle from "./FileExolorerTitle.vue";
 import { ref } from "@vue/reactivity";
-import { getCurrentInstance, watch } from "vue";
+import { getCurrentInstance, watch, watchEffect } from "vue";
 
 defineProps<{
   open: boolean;
@@ -28,13 +28,7 @@ const parentFolderId = ref<string | null>(null);
 const selectedFiles = ref<Array<File | null>>([]);
 const visitedFolderIds = ref<Array<string>>([]);
 
-watch(
-  data,
-  (_, newValue) => {
-    console.log(newValue?.value)
-    selectedFolder.value = newValue?.value as Folder;
-  }
-);
+watchEffect(() => { selectedFolder.value = data.value })
 
 const goToFolder = (folder: Folder | null) => {
   if (folder) {
@@ -132,7 +126,7 @@ const reset = () => {
               <FileExplorerTitle
                 defaultTitle="Root"
                 :currentFolder="selectedFolder"
-                @goToParentFolder="goToParentFolder"
+                @goToParent="goToParentFolder"
                 @reset="reset"
               />
             </DialogTitle>
