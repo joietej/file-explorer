@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps, defineEmits} from "vue";
 import { File } from "../hooks/useFolders";
 import { Switch } from "@headlessui/vue";
 import { PhotographIcon, DocumentIcon } from "@heroicons/vue/outline";
@@ -13,7 +12,6 @@ defineProps<{
 defineEmits<{
   (e: "change", checked: boolean): void;
 }>();
-
 </script>
 
 <template>
@@ -57,4 +55,3 @@ defineEmits<{
     </Switch>
   </li>
 </template>
-

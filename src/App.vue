@@ -1,43 +1,39 @@
 <script setup lang="ts">
 import { ref } from "@vue/reactivity";
-import FileInfo from "./components/FileInfo.vue";
 import { File } from "./hooks/useFolders";
+import FileExplorerDialog from "./components/FileExplorerDialog.vue";
 
-const file: File = {
-  id: "1",
-  name: "foo.jpg",
-  mimeType: "image/jpeg",
-  url: "",
-  parentFolderId: "",
+const showFileExplorer = ref<boolean>(false);
+const selectedFiles = ref<Array<File | null>>([]);
+
+const handleSelect = (files: Array<File | null>) => {
+  selectedFiles.value = files;
+  showFileExplorer.value = false;
 };
 
-const selectedFiles = ref<Array<File>>([]);
-
-const onFileSelect = (checked: boolean, file: File) => {
-  console.log(checked)
-  if (checked) {
-    selectedFiles.value = [
-      ...selectedFiles.value.filter((x) => x.id !== file.id), file
-    ];
-  } else {
-    selectedFiles.value = [
-      ...selectedFiles.value.filter((x) => x.id !== file.id)
-    ];
-  }
+const handleClose = () => {
+  selectedFiles.value = [];
+  showFileExplorer.value = false;
 };
-
-const isSelected = (file: File) =>
-  selectedFiles.value.map((f) => f.id).includes(file.id);
 </script>
 
 <template>
-  <FileInfo
-    :file="file"
-    @change="onFileSelect($event, file)"
-    :isChecked="isSelected(file)"
-  />
-
-  <ul>
-    <li :key="f.id" v-for="f in selectedFiles">{{ f.name }}</li>
-  </ul>
+  <div class="h-screen p-16">
+    <div class="flex flex-col items-center align-middle">
+      <button
+        class="bg-blue-600 rounded px-4 py-2 text-white text-xs font-lighht"
+        @click="showFileExplorer = true"
+      >
+        Select Files
+      </button>
+      <ul>
+        <li :key="f?.id" v-for="f in selectedFiles">{{ f?.name }}</li>
+      </ul>
+    </div>
+    <FileExplorerDialog
+      :open="showFileExplorer"
+      @select="handleSelect"
+      @close="handleClose"
+    />
+  </div>
 </template>

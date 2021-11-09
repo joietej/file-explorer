@@ -1,4 +1,4 @@
-import useSWR from "swrv";
+import useSWRV from "swrv";
 
 export type File = {
   id: string;
@@ -16,12 +16,37 @@ export type Folder = {
   files: File[];
 };
 
-export default function useFolders() {
-  const url = "https://api-dev.reo.so/api/folderStructure ";
-  const fetcher = (url: string) => fetch(url).then((r) => r.json());
-  const { data, error } = useSWR(url, fetcher);
-  if (!error && data) {
-    return { data, error: "" };
+export const isChecked = (id: string, selectedFiles: Array<File | null>) =>
+  selectedFiles.map((file) => file?.id).includes(id);
+
+export const isVisited = (id: string, visitedFolderIds: Array<string>) =>
+  visitedFolderIds.includes(id);
+
+export const searchFolder = (
+  id: string | null,
+  folder: Folder | null = null,
+  root: Folder | null = null
+): Folder | any => {
+  const source = folder?.folders || (root?.folders as Folder[]);
+  if (id && source?.length) {
+    let parent = source.find((f) => f.id === id);
+    if (!parent) {
+      for (let i = 0; i < source.length; i++) {
+        parent = searchFolder(id, source[i]);
+        if (parent) {
+          return parent;
+        }
+      }
+    }
+    return parent;
   }
-  return { data: null, error };
-}
+  return null;
+};
+
+const useFolders = () => {
+  const url = "https://api-dev.reo.so/api/folderStructure ";
+  const { data, error } = useSWRV(url);
+  return { data, error };
+};
+
+export default useFolders;
